@@ -30,4 +30,6 @@ paths = [
   '''\.gitleaks\.toml$''',
   '''package-lock\.json$''',
   '''\.env\.example$''',
+  '''README-DEVSECOPS\.md$''',
+  '''README\.md$''',
 ]
