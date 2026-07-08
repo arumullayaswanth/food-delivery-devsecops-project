@@ -93,7 +93,7 @@ Things that stay (cost $0):
 1. Search **"DynamoDB"** in AWS Console → Click it
 2. Click **"Create table"**
 3. Fill in:
-   - Table name: `food-delivery-terraform-state-lock`
+   - Table name: `food-delivery-terraform-state-lock-0000`
    - Partition key: `LockID` (type: **String**)
 4. Leave everything else as default
 5. Click **"Create table"**
@@ -245,7 +245,7 @@ Things that stay (cost $0):
 | `AWS_ACCOUNT_ID` | Your 12-digit AWS account ID | `123456789012` |
 | `AWS_ROLE_ARN` | The role ARN from Step 5 | `arn:aws:iam::123456789012:role/food-delivery-GitHubActions-Terraform-Role` |
 | `TF_STATE_BUCKET` | S3 bucket name from Step 2 | `food-delivery-terraform-state-0000` |
-| `TF_LOCK_TABLE` | DynamoDB table from Step 3 | `food-delivery-terraform-state-lock` |
+| `TF_LOCK_TABLE` | DynamoDB table from Step 3 | `food-delivery-terraform-state-lock-0000` |
 | `EKS_CLUSTER_NAME` | Cluster name | `food-delivery-cluster` |
 | `APP_URL` | Your domain | `tagent.cfd` |
 
