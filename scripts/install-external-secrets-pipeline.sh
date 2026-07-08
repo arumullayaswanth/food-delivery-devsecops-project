@@ -112,7 +112,23 @@ kubectl get pods -n "${ESO_NAMESPACE}"
 echo "Verifying External Secrets installation..."
 kubectl get deployment -n "${ESO_NAMESPACE}" external-secrets
 kubectl get pods -n "${ESO_NAMESPACE}"
-kubectl get crd externalsecrets.external-secrets.io
+
+# Wait for CRDs to be registered (required before creating SecretStore)
+echo "Waiting for External Secrets CRDs to be available..."
+for i in $(seq 1 30); do
+  if kubectl get crd externalsecrets.external-secrets.io >/dev/null 2>&1; then
+    echo "  ✅ CRDs are registered!"
+    break
+  fi
+  if [ "$i" -eq "30" ]; then
+    echo "  WARNING: CRDs not available after 5 minutes. SecretStore creation will be skipped."
+    echo "  Run the DevSecOps pipeline later to set up SecretStore."
+    # Skip the rest of the script
+    exit 0
+  fi
+  echo "  Waiting for CRDs... ($i/30)"
+  sleep 10
+done
 
 echo ""
 echo "✅ External Secrets Operator installed successfully."

@@ -33,7 +33,7 @@ echo "Installing Falco..."
 helm upgrade --install falco falcosecurity/falco \
   --namespace falco \
   --create-namespace \
-  --set driver.kind=ebpf \
+  --set driver.kind=modern_ebpf \
   --set falcosidekick.enabled=true \
   --timeout 10m \
   --wait=false
