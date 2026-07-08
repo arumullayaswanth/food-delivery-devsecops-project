@@ -34,25 +34,31 @@ helm upgrade --install falco falcosecurity/falco \
   --namespace falco \
   --create-namespace \
   --set driver.kind=ebpf \
-  --set falcosidekick.enabled=true
+  --set falcosidekick.enabled=true \
+  --timeout 10m \
+  --wait=false
 
 echo "Waiting for Falco pods to be ready..."
-for i in $(seq 1 60); do
-  READY=$(kubectl get pods -n falco -l app.kubernetes.io/name=falco \
-    --no-headers 2>/dev/null | grep -c "Running" || echo "0")
-  if [ "$READY" -gt "0" ]; then
-    echo "  ✅ Falco pod is Running!"
-    break
-  fi
-  if [ "$i" -eq "60" ]; then
-    echo "  WARNING: Timed out waiting for Falco pods."
-    kubectl get pods -n falco
-    echo "  Continuing — Falco may start once node is ready..."
-    break
-  fi
-  echo "  Waiting... ($i/60)"
-  sleep 10
-done
+# Falco is a DaemonSet — wait for at least 1 pod to be ready
+kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=falco \
+  -n falco --timeout=600s 2>/dev/null || {
+  echo "  Falco pods not ready via kubectl wait, polling..."
+  for i in $(seq 1 60); do
+    READY=$(kubectl get pods -n falco -l app.kubernetes.io/name=falco \
+      --no-headers 2>/dev/null | grep -c "Running" || echo "0")
+    if [ "$READY" -gt "0" ]; then
+      echo "  ✅ Falco pod is Running!"
+      break
+    fi
+    if [ "$i" -eq "60" ]; then
+      echo "  WARNING: Timed out. Falco may start after node is fully ready."
+      kubectl get pods -n falco
+      break
+    fi
+    echo "  Waiting... ($i/60)"
+    sleep 10
+  done
+}
 
 # ─────────────────────────────────────────────────────────────────
 # Step 3: Verify

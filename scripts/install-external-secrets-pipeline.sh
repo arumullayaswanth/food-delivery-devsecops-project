@@ -71,29 +71,36 @@ helm upgrade --install external-secrets external-secrets/external-secrets \
   --create-namespace \
   --set installCRDs=true \
   --set serviceAccount.create=true \
-  --set serviceAccount.name="${ESO_SERVICE_ACCOUNT}"
+  --set serviceAccount.name="${ESO_SERVICE_ACCOUNT}" \
+  --timeout 10m \
+  --wait=false
 
 echo "Waiting for External Secrets pods to be ready..."
 echo "  (EKS Auto Mode is provisioning a node — this may take 3-5 minutes)"
 
-# Poll until at least 1 pod is Running (Auto Mode needs time to spin up nodes)
-for i in $(seq 1 60); do
-  READY=$(kubectl get pods -n "${ESO_NAMESPACE}" -l app.kubernetes.io/name=external-secrets \
-    --no-headers 2>/dev/null | grep -c "Running" || echo "0")
-  if [ "$READY" -gt "0" ]; then
-    echo "  ✅ External Secrets pod is Running!"
-    break
-  fi
-  if [ "$i" -eq "60" ]; then
-    echo "  WARNING: Timed out waiting for pods. Checking status:"
-    kubectl get pods -n "${ESO_NAMESPACE}"
-    kubectl describe pods -n "${ESO_NAMESPACE}" -l app.kubernetes.io/name=external-secrets | tail -20
-    echo "  Continuing anyway — pods may become ready shortly..."
-    break
-  fi
-  echo "  Waiting... ($i/60) — pods not ready yet"
-  sleep 10
-done
+# Use kubectl wait with condition=available (industry standard for EKS Auto Mode)
+# This waits independently of the deployment's progressDeadlineSeconds
+kubectl wait --for=condition=available deployment/external-secrets \
+  -n "${ESO_NAMESPACE}" --timeout=600s 2>/dev/null || {
+  # Fallback: poll manually if kubectl wait fails
+  echo "  kubectl wait failed, polling manually..."
+  for i in $(seq 1 60); do
+    READY=$(kubectl get deployment external-secrets -n "${ESO_NAMESPACE}" \
+      -o jsonpath='{.status.availableReplicas}' 2>/dev/null || echo "0")
+    if [ "${READY:-0}" -gt "0" ]; then
+      echo "  ✅ External Secrets deployment is available!"
+      break
+    fi
+    if [ "$i" -eq "60" ]; then
+      echo "  WARNING: Timed out. Current pod status:"
+      kubectl get pods -n "${ESO_NAMESPACE}"
+      echo "  Continuing — pods may become ready shortly..."
+      break
+    fi
+    echo "  Waiting... ($i/60)"
+    sleep 10
+  done
+}
 
 kubectl get pods -n "${ESO_NAMESPACE}"
 
