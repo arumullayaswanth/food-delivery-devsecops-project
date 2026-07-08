@@ -132,12 +132,12 @@ Things that stay (cost $0):
 4. Click **"Next"**
 5. Search and check **`AdministratorAccess`**
 6. Click **"Next"**
-7. Role name: `food-delivery-GitHubActions-Terraform-Role`
+7. Role name: `food-delivery-GitHubActions-Terraform-Role-0000`
 8. Click **"Create role"**
 
 **Now edit the trust policy:**
 
-9. Go to **IAM → Roles** → Click on `food-delivery-GitHubActions-Terraform-Role`
+9. Go to **IAM → Roles** → Click on `food-delivery-GitHubActions-Terraform-Role-0000`
 10. Click **"Trust relationships"** tab → Click **"Edit trust policy"**
 11. Replace everything with this (change `YOUR_ACCOUNT_ID` to your 12-digit AWS account ID):
 
@@ -167,7 +167,7 @@ Things that stay (cost $0):
 12. Click **"Update policy"**
 13. Go back to the role → Copy the **ARN** at the top. It looks like:
     ```
-    arn:aws:iam::123456789012:role/food-delivery-GitHubActions-Terraform-Role
+    arn:aws:iam::123456789012:role/food-delivery-GitHubActions-Terraform-Role-0000
     ```
 14. **Save this ARN** — you need it in Step 8.
 
@@ -243,7 +243,7 @@ Things that stay (cost $0):
 |---|---|---|
 | `AWS_REGION` | Your AWS region | `ap-south-1` |
 | `AWS_ACCOUNT_ID` | Your 12-digit AWS account ID | `123456789012` |
-| `AWS_ROLE_ARN` | The role ARN from Step 5 | `arn:aws:iam::123456789012:role/food-delivery-GitHubActions-Terraform-Role` |
+| `AWS_ROLE_ARN` | The role ARN from Step 5 | `arn:aws:iam::123456789012:role/food-delivery-GitHubActions-Terraform-Role-0000` |
 | `TF_STATE_BUCKET` | S3 bucket name from Step 2 | `food-delivery-terraform-state-0000` |
 | `TF_LOCK_TABLE` | DynamoDB table from Step 3 | `food-delivery-terraform-state-lock-0000` |
 | `EKS_CLUSTER_NAME` | Cluster name | `food-delivery-cluster` |
