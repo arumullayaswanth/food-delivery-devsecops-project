@@ -230,7 +230,7 @@ EOF
 
 # SecretStore (connects to AWS Secrets Manager)
 cat <<EOF | kubectl apply -f -
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 metadata:
   name: aws-secrets-manager
@@ -248,7 +248,7 @@ EOF
 
 # ExternalSecret (syncs AWS Secrets Manager → K8s Secret)
 cat <<EOF | kubectl apply -f -
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: food-delivery-secrets
