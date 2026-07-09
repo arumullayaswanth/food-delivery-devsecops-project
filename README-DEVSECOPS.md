@@ -386,7 +386,7 @@ Copy the output — you'll paste it in the next step. Keep it secret, never shar
    - **Standard keys** — full API access keys (use this)
 4. Under **Standard keys**, find the **Secret key** row
 5. Click the **`...`** (three dots) on the right side of the **Secret key** row → Click **Copy**
-   - The token looks like: `sk_test_51TrEoUP7mABZYGZ7ofHt6KR65gP...`
+   - The token looks like: `sk_tesxxxxxxxxxxxxxxxxxxxxxxxxxxxx...`
 6. Paste this value as your `STRIPE_SECRET_KEY`
 
 > Do **NOT** copy the `Publishable key` (`pk_test_...`) — that is for the frontend only
