@@ -64,6 +64,15 @@ resource "aws_security_group" "eks_cluster" {
   description = "Security group for EKS cluster"
   vpc_id      = aws_vpc.main.id
 
+  # Allow bastion to reach EKS API server
+  ingress {
+    description     = "Allow bastion to access EKS API"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.bastion.id]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
