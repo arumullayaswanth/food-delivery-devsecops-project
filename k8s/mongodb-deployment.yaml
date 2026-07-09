@@ -31,6 +31,16 @@ spec:
           env:
             - name: MONGO_INITDB_DATABASE
               value: "food-delivery"
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: food-delivery-secrets
+                  key: mongodb-username
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: food-delivery-secrets
+                  key: mongodb-password
           resources:
             limits:
               memory: "512Mi"

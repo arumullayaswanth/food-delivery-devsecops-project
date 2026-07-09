@@ -373,7 +373,7 @@ Go to **AWS Console → Secrets Manager → `food-delivery/app-secrets`** → **
 
 | Key | Value |
 |-----|-------|
-| `MONGODB_URI` | `mongodb://mongodb.food-delivery.svc.cluster.local:27017/food-delivery` |
+| `MONGODB_URI` | `mongodb://foodadmin:FoodSecure2024@mongodb.food-delivery.svc.cluster.local:27017/food-delivery?authSource=admin` |
 | `JWT_SECRET` | A random strong secret you generate yourself — see below |
 | `STRIPE_SECRET_KEY` | your Stripe secret key from [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys) |
 
@@ -395,8 +395,8 @@ Go to **Secrets Manager → `food-delivery/database`** → **Retrieve secret val
 |-----|-------|
 | `DB_HOST` | `mongodb.food-delivery.svc.cluster.local` |
 | `DB_NAME` | `food-delivery` |
-| `DB_USERNAME` | `CHANGE_ME` (not used — no auth configured) |
-| `DB_PASSWORD` | `CHANGE_ME` (not used — no auth configured) |
+| `DB_USERNAME` | `foodadmin` |
+| `DB_PASSWORD` | `FoodSecure2024` |
 | `DB_PORT` | `27017` |
 
 Click **Save**

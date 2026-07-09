@@ -274,6 +274,14 @@ spec:
       remoteRef:
         key: food-delivery/app-secrets
         property: STRIPE_SECRET_KEY
+    - secretKey: mongodb-username
+      remoteRef:
+        key: food-delivery/database
+        property: DB_USERNAME
+    - secretKey: mongodb-password
+      remoteRef:
+        key: food-delivery/database
+        property: DB_PASSWORD
 EOF
 
 # ─────────────────────────────────────────────────────────────────
