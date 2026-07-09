@@ -367,27 +367,43 @@ kubectl get nodes
 
 ---
 
-**Secret 1: `food-delivery/app-secrets`**
+**Step 13.1 — Generate your JWT Secret (run on bastion):**
+
+```bash
+openssl rand -base64 48
+```
+
+Copy the output — you'll paste it in the next step. Keep it secret, never share it.
+
+---
+
+**Step 13.2 — Get your Stripe Secret Key:**
+
+1. Go to [dashboard.stripe.com](https://dashboard.stripe.com) → Login
+2. Click **Developers** (top-right) → **API keys**
+3. Under **Standard keys** → Click **Reveal test key** → Copy the key
+   - Test key starts with `sk_test_` — no real money charged
+   - Live key starts with `sk_live_` — real payments processed
+
+---
+
+**Step 13.3 — Update `food-delivery/app-secrets`:**
 
 Go to **AWS Console → Secrets Manager → `food-delivery/app-secrets`** → **Retrieve secret value** → **Edit**
 
 | Key | Value |
 |-----|-------|
 | `MONGODB_URI` | `mongodb://foodadmin:FoodSecure2024@mongodb.food-delivery.svc.cluster.local:27017/food-delivery?authSource=admin` |
-| `JWT_SECRET` | A random strong secret you generate yourself — see below |
-| `STRIPE_SECRET_KEY` | your Stripe secret key from [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys) |
+| `JWT_SECRET` | paste the value from Step 13.1 |
+| `STRIPE_SECRET_KEY` | paste the key from Step 13.2 |
 
-**Note on MONGODB_URI:** MongoDB runs inside the Kubernetes cluster (deployed automatically). The URI above uses the internal cluster DNS — no Atlas account needed.
+> **Note:** `MONGODB_URI` is already pre-filled — MongoDB runs inside the cluster, no Atlas needed.
 
-**How to generate a JWT_SECRET:**
-
-Run this command on your bastion:
-```bash
-openssl rand -base64 48
-```
-Copy the output and use it as your `JWT_SECRET`. Keep it secret — never share or commit it.
+Click **Save**
 
 ---
+
+**Step 13.4 — Update `food-delivery/database`:**
 
 Go to **Secrets Manager → `food-delivery/database`** → **Retrieve secret value** → **Edit**
 
@@ -403,7 +419,7 @@ Click **Save**
 
 ---
 
-**Force sync secrets to Kubernetes immediately** (run on bastion):
+**Step 13.5 — Force sync secrets to Kubernetes** (run on bastion):
 
 ```bash
 kubectl annotate externalsecret food-delivery-secrets -n food-delivery force-sync=$(date +%s) --overwrite
