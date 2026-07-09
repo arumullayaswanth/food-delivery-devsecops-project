@@ -292,22 +292,11 @@ Things that stay (cost $0):
 
 **Why:** You need to access the bastion to configure SonarQube and run kubectl commands.
 
-**Option A — AWS Console (easiest):**
+**AWS Console (easiest):**
 1. Go to **AWS Console → EC2 → Instances**
 2. Select `food-delivery-bastion` → Click **Connect**
 3. Click **Session Manager** tab → Click **Connect**
 4. A terminal opens in your browser — no SSH key needed
-
-**Option B — AWS CLI:**
-```bash
-# Get the instance ID
-INSTANCE_ID=$(aws ec2 describe-instances \
-  --filters "Name=tag:Name,Values=food-delivery-bastion" "Name=instance-state-name,Values=running" \
-  --query "Reservations[0].Instances[0].InstanceId" --output text --region ap-south-1)
-
-# Connect
-aws ssm start-session --target $INSTANCE_ID --region ap-south-1
-```
 
 **Note:** All tools (kubectl, Helm, Docker, SonarQube) are already installed automatically via user data. No manual installation needed.
 
@@ -376,21 +365,29 @@ kubectl get nodes
 
 **Why:** Replace the placeholder `CHANGE_ME` values with your actual credentials.
 
+---
+
 **Secret 1: `food-delivery/app-secrets`**
 
 Go to **AWS Console → Secrets Manager → `food-delivery/app-secrets`** → **Retrieve secret value** → **Edit**
 
 | Key | Value |
 |-----|-------|
-| `MONGODB_URI` | `mongodb+srv://youruser:yourpassword@cluster0.xxxxx.mongodb.net/food-delivery` |
-| `JWT_SECRET` | any random strong string (minimum 32 characters) |
+| `MONGODB_URI` | `mongodb://mongodb.food-delivery.svc.cluster.local:27017/food-delivery` |
+| `JWT_SECRET` | A random strong secret you generate yourself — see below |
 | `STRIPE_SECRET_KEY` | your Stripe secret key from [dashboard.stripe.com/apikeys](https://dashboard.stripe.com/apikeys) |
 
-Click **Save**
+**Note on MONGODB_URI:** MongoDB runs inside the Kubernetes cluster (deployed automatically). The URI above uses the internal cluster DNS — no Atlas account needed.
+
+**How to generate a JWT_SECRET:**
+
+Run this command on your bastion:
+```bash
+openssl rand -base64 48
+```
+Copy the output and use it as your `JWT_SECRET`. Keep it secret — never share or commit it.
 
 ---
-
-**Secret 2: `food-delivery/database`**
 
 Go to **Secrets Manager → `food-delivery/database`** → **Retrieve secret value** → **Edit**
 

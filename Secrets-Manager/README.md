@@ -10,7 +10,7 @@ This project uses **4 secrets** in AWS Secrets Manager. Below is exactly what ke
 
 | Key | What It Is | Where To Get It |
 |-----|-----------|-----------------|
-| `MONGODB_URI` | MongoDB connection string | Go to [MongoDB Atlas](https://cloud.mongodb.com) → Your Cluster → Click **Connect** → Select **Connect your application** → Copy the connection string. Replace `<password>` with your actual password. |
+| `MONGODB_URI` | MongoDB connection string | MongoDB runs **inside Kubernetes cluster** — use: `mongodb://mongodb.food-delivery.svc.cluster.local:27017/food-delivery` |
 | `JWT_SECRET` | Secret key for signing JWT tokens | Create any random strong string (minimum 32 characters). Example: `mySuperSecret123!@#FoodDelivery2024` |
 | `STRIPE_SECRET_KEY` | Stripe payment secret key | Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys) → Copy the **Secret key** |
 
@@ -20,7 +20,7 @@ aws secretsmanager update-secret \
   --secret-id food-delivery/app-secrets \
   --region ap-south-1 \
   --secret-string '{
-    "MONGODB_URI": "mongodb+srv://youruser:yourpassword@cluster0.xxxxx.mongodb.net/food-delivery",
+    "MONGODB_URI": "mongodb://mongodb.food-delivery.svc.cluster.local:27017/food-delivery",
     "JWT_SECRET": "your-random-strong-secret-minimum-32-characters",
     "STRIPE_SECRET_KEY": "your-stripe-secret-key-from-dashboard"
   }'
