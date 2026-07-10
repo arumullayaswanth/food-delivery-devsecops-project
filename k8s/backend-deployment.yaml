@@ -1,5 +1,5 @@
 # ═══════════════════════════════════════════════════════════════════
-# Backend Deployment — Hardened (Episodes 05, 06, 08)
+# Backend Deployment — Hardened
 # ═══════════════════════════════════════════════════════════════════
 apiVersion: apps/v1
 kind: Deployment
