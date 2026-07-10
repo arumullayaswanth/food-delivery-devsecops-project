@@ -359,9 +359,15 @@ jobs:
             --secret-id food-delivery/app-secrets \
             --query SecretString --output text)
 
+          DB_SECRETS=$(aws secretsmanager get-secret-value \
+            --secret-id food-delivery/database \
+            --query SecretString --output text)
+
           MONGODB_URI=$(echo $SECRETS | jq -r '.MONGODB_URI')
           JWT_SECRET=$(echo $SECRETS | jq -r '.JWT_SECRET')
           STRIPE_KEY=$(echo $SECRETS | jq -r '.STRIPE_SECRET_KEY')
+          DB_USERNAME=$(echo $DB_SECRETS | jq -r '.DB_USERNAME')
+          DB_PASSWORD=$(echo $DB_SECRETS | jq -r '.DB_PASSWORD')
 
           # Create/update Kubernetes secret from Secrets Manager values
           kubectl create namespace food-delivery --dry-run=client -o yaml | kubectl apply -f -
@@ -372,7 +378,9 @@ jobs:
             --namespace food-delivery \
             --from-literal=mongodb-uri="$MONGODB_URI" \
             --from-literal=jwt-secret="$JWT_SECRET" \
-            --from-literal=stripe-secret-key="$STRIPE_KEY"
+            --from-literal=stripe-secret-key="$STRIPE_KEY" \
+            --from-literal=mongodb-username="$DB_USERNAME" \
+            --from-literal=mongodb-password="$DB_PASSWORD"
 
       - name: Deploy to Kubernetes
         run: |
