@@ -3,14 +3,19 @@
 # Purpose: Connect to EKS + Run SonarQube (Docker)
 # ═══════════════════════════════════════════════════════════════════
 
-# Get latest Amazon Linux 2023 AMI
+# Get latest Amazon Linux 2023 AMI (NOT minimal — needs SSM agent + docker)
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["al2023-ami-*-x86_64"]
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023*kernel*"]
   }
 
   filter {
