@@ -30,6 +30,15 @@ resource "aws_security_group" "bastion" {
   description = "Security group for bastion host"
   vpc_id      = aws_vpc.main.id
 
+  # SSH (port 22)
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   # SonarQube UI (port 9000)
   ingress {
     description = "SonarQube UI"
