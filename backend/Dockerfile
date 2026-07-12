@@ -25,11 +25,13 @@ WORKDIR /app
 # Copy only production artifacts from builder
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/server.js ./
+COPY --from=builder /app/seed.js ./
 COPY --from=builder /app/config ./config
 COPY --from=builder /app/controllers ./controllers
 COPY --from=builder /app/middleware ./middleware
 COPY --from=builder /app/models ./models
 COPY --from=builder /app/routes ./routes
+COPY --from=builder /app/uploads ./uploads
 
 # Expose application port
 EXPOSE 4000

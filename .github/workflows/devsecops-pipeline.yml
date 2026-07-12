@@ -421,6 +421,10 @@ jobs:
           kubectl rollout status deployment/food-delivery-frontend -n food-delivery --timeout=120s
           kubectl rollout status deployment/food-delivery-admin -n food-delivery --timeout=120s
 
+          # Seed database with food items and admin user
+          echo "Seeding database..."
+          kubectl exec deployment/food-delivery-backend -n food-delivery -- /nodejs/bin/node seed.js || true
+
       - name: Get deployment info
         if: always()
         run: |

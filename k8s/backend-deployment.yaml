@@ -34,7 +34,7 @@ spec:
             - containerPort: 4000
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
             runAsNonRoot: true
             runAsUser: 10001
             capabilities:
@@ -86,13 +86,8 @@ spec:
           volumeMounts:
             - name: tmp
               mountPath: /tmp
-            - name: uploads
-              mountPath: /app/uploads
       volumes:
         - name: tmp
           emptyDir:
             medium: Memory
             sizeLimit: 64Mi
-        - name: uploads
-          emptyDir:
-            sizeLimit: 256Mi
