@@ -512,6 +512,35 @@ Copy the ADDRESS (looks like: `k8s-fooddeli-xxx.ap-south-1.elb.amazonaws.com`)
 
 ---
 
+#### Step 15.1: Create Admin User (Run on Bastion)
+
+**Why:** The admin panel needs a user with `role: "admin"` to login. Fresh MongoDB has no users, so we create one.
+
+1. Connect to bastion (Step 10)
+2. Run this command:
+
+```bash
+kubectl exec deployment/mongodb -n food-delivery -- mongosh -u foodadmin -p FoodSecure2024 --authenticationDatabase admin food-delivery --eval 'db.users.insertOne({name:"Admin",email:"admin@food.com",password:"$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",role:"admin",cartData:{}})'
+```
+
+3. Admin credentials:
+
+| Field | Value |
+|-------|-------|
+| Email | `admin@food.com` |
+| Password | `password123` |
+
+4. Login to Admin Panel (`https://admin.your-domain.com`) with these credentials
+5. Go to **Add Items** → Add food items (name, price, image, category)
+6. The frontend will now display the food items you added
+
+> **To change the password later:** Sign up with a new email on the frontend, then promote to admin:
+> ```bash
+> kubectl exec deployment/mongodb -n food-delivery -- mongosh -u foodadmin -p FoodSecure2024 --authenticationDatabase admin food-delivery --eval 'db.users.updateOne({email:"your-new-email@example.com"},{$set:{role:"admin"}})'
+> ```
+
+---
+
 ### PART 6: Destroy Everything (Bill → $0)
 
 ---
